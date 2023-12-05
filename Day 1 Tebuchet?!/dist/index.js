@@ -29,10 +29,17 @@ const filePath = path.join(__dirname, '../src/calibration.txt');
 const text = fs.readFileSync(filePath, 'utf-8');
 const textSplittedToNewLines = text.split('\n');
 console.log(textSplittedToNewLines.length);
-const callibrationResultFirst = textSplittedToNewLines.reduce((accumulator, textLine) => {
+const callibrationResultFirst = textSplittedToNewLines.reduce((accumulator, textLine, index) => {
     const firstAndLastDigitCombined = getFirstAndLastDigitCombinedFromString(textLine);
+    console.log(index, textLine, firstAndLastDigitCombined, accumulator);
     return accumulator + firstAndLastDigitCombined;
 }, 0);
+let sum = 0;
+for (const textLine of textSplittedToNewLines) {
+    const firstAndLastDigitCombined = getFirstAndLastDigitCombinedFromString(textLine);
+    sum += firstAndLastDigitCombined;
+}
+console.log(sum);
 console.log(callibrationResultFirst);
 function getFirstAndLastDigitCombinedFromString(textLine) {
     const firstDigitInString = getFirstDigitFromString(textLine);
@@ -43,20 +50,25 @@ function getFirstAndLastDigitCombinedFromString(textLine) {
     return 0;
 }
 function getFirstDigitFromString(textLine) {
-    const regexForDigitInString = /\d/g;
-    let firstDigitInString;
-    for (const match of textLine.matchAll(regexForDigitInString)) {
-        if (!firstDigitInString) {
-            firstDigitInString = match[0];
-        }
-    }
-    return firstDigitInString ? parseInt(firstDigitInString) : null;
+    const regexForDigitInString = /(?:zero|one|two|three|four|five|six|seven|eight|nine|[0-9])/i;
+    const matchResult = textLine.match(regexForDigitInString);
+    const firstDigitInString = matchResult ? matchResult[0] : '';
+    return firstDigitInString ? parseStringToNumber(firstDigitInString) : null;
 }
 function getLastDigitFromString(textLine) {
-    const regexForDigitInString = /\d/g;
+    const regexForDigitInString = /(?:zero|one|two|three|four|five|six|seven|eight|nine|\d)(?=[^\d]*$)/gi;
     let lastDigitInString;
     for (const match of textLine.matchAll(regexForDigitInString)) {
         lastDigitInString = match[0];
     }
-    return lastDigitInString ? parseInt(lastDigitInString) : null;
+    return lastDigitInString ? parseStringToNumber(lastDigitInString) : null;
+}
+function parseStringToNumber(str) {
+    const numberWords = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    if (/\d/.test(str)) {
+        return parseInt(str);
+    }
+    else {
+        return numberWords.indexOf(str.toLowerCase());
+    }
 }
