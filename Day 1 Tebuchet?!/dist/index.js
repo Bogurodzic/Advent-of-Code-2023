@@ -31,15 +31,8 @@ const textSplittedToNewLines = text.split('\n');
 console.log(textSplittedToNewLines.length);
 const callibrationResultFirst = textSplittedToNewLines.reduce((accumulator, textLine, index) => {
     const firstAndLastDigitCombined = getFirstAndLastDigitCombinedFromString(textLine);
-    console.log(index, textLine, firstAndLastDigitCombined, accumulator);
     return accumulator + firstAndLastDigitCombined;
 }, 0);
-let sum = 0;
-for (const textLine of textSplittedToNewLines) {
-    const firstAndLastDigitCombined = getFirstAndLastDigitCombinedFromString(textLine);
-    sum += firstAndLastDigitCombined;
-}
-console.log(sum);
 console.log(callibrationResultFirst);
 function getFirstAndLastDigitCombinedFromString(textLine) {
     const firstDigitInString = getFirstDigitFromString(textLine);
@@ -56,12 +49,11 @@ function getFirstDigitFromString(textLine) {
     return firstDigitInString ? parseStringToNumber(firstDigitInString) : null;
 }
 function getLastDigitFromString(textLine) {
-    const regexForDigitInString = /(?:zero|one|two|three|four|five|six|seven|eight|nine|\d)(?=[^\d]*$)/gi;
-    let lastDigitInString;
-    for (const match of textLine.matchAll(regexForDigitInString)) {
-        lastDigitInString = match[0];
-    }
-    return lastDigitInString ? parseStringToNumber(lastDigitInString) : null;
+    const reversedTextLine = textLine.split('').reverse().join('');
+    const regexForDigitInString = /(?:orez|eno|owt|eerht|ruof|evif|xis|neves|thgie|enin|[0-9])/i;
+    const matchResult = reversedTextLine.match(regexForDigitInString);
+    const firstDigitInString = matchResult ? matchResult[0].split('').reverse().join('') : '';
+    return firstDigitInString ? parseStringToNumber(firstDigitInString) : null;
 }
 function parseStringToNumber(str) {
     const numberWords = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
