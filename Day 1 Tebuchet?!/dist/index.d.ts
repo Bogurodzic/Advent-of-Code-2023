@@ -1,1 +1,1 @@
-declare const message = "Hello, world!";
+export {};
